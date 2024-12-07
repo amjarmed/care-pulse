@@ -1,5 +1,5 @@
 "use client";
-import LucIcon from "@/components/LucideIcon";
+import { formFieldType } from "@/components/forms/patientForm";
 import {
   FormControl,
   FormField,
@@ -8,61 +8,127 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { icons } from "lucide-react";
-import { HTMLInputTypeAttribute } from "react";
+import Image from "next/image";
+import React from "react";
 import { Control } from "react-hook-form";
 
 interface CustomFormFieldProps {
   control: Control<any>;
-  placeholder: string;
-  formDescription?: string;
-  label: string;
   name: string;
-  type?: HTMLInputTypeAttribute | undefined;
-  icon: keyof typeof icons;
+  fieldType: formFieldType;
+  placeholder?: string;
+  label?: string;
+  icon?: string;
+  iconAlt?: string;
   disabled?: boolean;
   dateFormat?: string;
-  showTimeSelect?: "";
+  showTimeSelect?: string;
   children?: React.ReactNode;
-  renderSkelton?: (field: any) => React.ReactNode;
+  renderSkeleton?: (field: any) => React.ReactNode;
 }
 
-function CustomFormField({
-  control,
-  placeholder,
-  label,
-  name,
-  type,
-  icon,
-}: CustomFormFieldProps) {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          {type !== "checkbox" && label && <FormLabel>{label}</FormLabel>}
-
-          <section className="relative">
-            <FormControl>
-              <Input
-                placeholder={placeholder}
-                type={type}
-                {...field}
-                className="ps-12 py-6 focus:border-green-300 focus:shadow focus:shadow-green-400 transition"
-              />
-            </FormControl>
-            <LucIcon
-              size={24}
-              name={icon}
-              styles="absolute top-1/2 left-16 -translate-x-14 -translate-y-1/2"
+const RenderField = ({
+  field,
+  props,
+}: {
+  field: any;
+  props: CustomFormFieldProps;
+}) => {
+  const { fieldType, icon, iconAlt, placeholder } = props;
+  switch (props.fieldType) {
+    case formFieldType.INPUT:
+      return (
+        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+          {icon && (
+            <Image
+              src={icon}
+              alt={iconAlt || "icon"}
+              width={24}
+              height={24}
+              className="ml-2"
             />
-          </section>
+          )}
+          <FormControl>
+            <Input
+              type={fieldType}
+              placeholder={placeholder}
+              name={field}
+              className="shad-input border-0"
+              {...field}
+            />
+          </FormControl>
+        </div>
+      );
 
-          <FormMessage className="shad-error" />
-        </FormItem>
-      )}
-    />
+    case formFieldType.EMAIL_INPUT:
+      return (
+        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+          {icon && (
+            <Image
+              src={icon}
+              alt={iconAlt || "icon"}
+              width={24}
+              height={24}
+              className="ml-2"
+            />
+          )}
+          <FormControl>
+            <Input
+              type={fieldType}
+              placeholder={placeholder}
+              name={field}
+              className="shad-input border-0"
+              {...field}
+            />
+          </FormControl>
+        </div>
+      );
+
+    case formFieldType.PHONE_INPUT:
+      return (
+        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+          {icon && (
+            <Image
+              src={icon}
+              alt={iconAlt || "icon"}
+              width={24}
+              height={24}
+              className="ml-2"
+            />
+          )}
+          <FormControl>
+            <Input
+              type={fieldType}
+              placeholder={placeholder}
+              name={field}
+              className="shad-input border-0"
+              {...field}
+            />
+          </FormControl>
+        </div>
+      );
+    default:
+      break;
+  }
+};
+function CustomFormField(props: CustomFormFieldProps) {
+  const { control, name, fieldType, label } = props;
+  return (
+    <>
+      <FormField
+        control={control}
+        name={name}
+        render={({ field }) => (
+          <FormItem className="flex-1">
+            {fieldType !== formFieldType.CHECKBOX && label && (
+              <FormLabel>{label}</FormLabel>
+            )}
+            <RenderField field={field} props={props} />
+            <FormMessage className="shad-error" />
+          </FormItem>
+        )}
+      />
+    </>
   );
 }
 
