@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import React from "react";
 import { Control } from "react-hook-form";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 interface CustomFormFieldProps {
   control: Control<any>;
@@ -35,6 +37,7 @@ const RenderField = ({
   props: CustomFormFieldProps;
 }) => {
   const { fieldType, icon, iconAlt, placeholder } = props;
+
   switch (props.fieldType) {
     case formFieldType.INPUT:
       return (
@@ -77,7 +80,7 @@ const RenderField = ({
               type={fieldType}
               placeholder={placeholder}
               name={field}
-              className="shad-input border-0"
+              className="shad-input border-0 "
               {...field}
             />
           </FormControl>
@@ -87,22 +90,18 @@ const RenderField = ({
     case formFieldType.PHONE_INPUT:
       return (
         <div className="flex rounded-md border border-dark-500 bg-dark-400">
-          {icon && (
-            <Image
-              src={icon}
-              alt={iconAlt || "icon"}
-              width={24}
-              height={24}
-              className="ml-2"
-            />
-          )}
           <FormControl>
-            <Input
-              type={fieldType}
+            <PhoneInput
+              defaultCountry="US"
               placeholder={placeholder}
               name={field}
-              className="shad-input border-0"
+              // field.value as E164Number | undefined
+              value={field.value}
+              onChange={field.onChange}
+              className="input-phone border-none outline-none"
               {...field}
+              international
+              withCountryCallingCode
             />
           </FormControl>
         </div>
