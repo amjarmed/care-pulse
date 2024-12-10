@@ -4,22 +4,13 @@ import CustomFormField from "@/components/forms/CustomformField";
 import SubmitButton from "@/components/submitButton";
 import { Form } from "@/components/ui/form";
 import { createUser } from "@/lib/actions/patient.action";
+import { formFieldType } from "@/lib/constants";
 import { UserFormValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-export enum formFieldType {
-  INPUT = "input",
-  CHECKBOX = "checkbox",
-  TEXTAREA = "textarea",
-  DATE_PICKER = "datePicker",
-  PHONE_INPUT = "phoneInput",
-  SKELETON = "skeleton",
-  EMAIL_INPUT = "email",
-}
 
 function PatientForm() {
   // loader
@@ -41,6 +32,7 @@ function PatientForm() {
     email,
     phone,
   }: z.infer<typeof UserFormValidation>) {
+    console.log("start submit...");
     setLoading(true);
 
     try {
@@ -48,8 +40,6 @@ function PatientForm() {
       const user = await createUser(userData);
 
       if (user) router.push(`/patients/${user.$id}/register`);
-
-      console.log(userData);
     } catch (error) {
       console.log(error);
     }
@@ -58,7 +48,7 @@ function PatientForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
-        <section>
+        <section className="space-y-4 mb-12">
           <h1 className="header">Hi there 👋</h1>
           <p className="text-dark-700">Schedule your first Appointment.</p>
         </section>
@@ -88,9 +78,7 @@ function PatientForm() {
           fieldType={formFieldType.PHONE_INPUT}
         />
 
-        <SubmitButton isLoading={isLoading} onClick={() => onSubmit}>
-          Get started
-        </SubmitButton>
+        <SubmitButton isLoading={isLoading}>Get started</SubmitButton>
       </form>
     </Form>
   );

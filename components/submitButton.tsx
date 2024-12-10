@@ -5,7 +5,6 @@ interface SubmitButtonProps {
   isLoading: boolean;
   className?: string;
   children?: React.ReactNode;
-  onClick?: () => void;
 }
 
 function SubmitButton({ isLoading, className, children }: SubmitButtonProps) {
