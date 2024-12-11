@@ -1,4 +1,7 @@
 "use client";
+import { E164Number } from "libphonenumber-js/core";
+
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
@@ -7,19 +10,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectTrigger } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { formFieldType } from "@/lib/constants";
+import { SelectValue } from "@radix-ui/react-select";
 import Image from "next/image";
 import React from "react";
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.min.css";
 import { Control } from "react-hook-form";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-// CSS Modules, react-datepicker-cssmodules.css
-// import "react-datepicker/dist/react-datepicker-cssmodules.css";
-import { Select, SelectContent, SelectTrigger } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { SelectValue } from "@radix-ui/react-select";
-import "react-datepicker/dist/react-datepicker.min.css";
 interface CustomFormFieldProps {
   control: Control<any>;
   name: string;
@@ -89,7 +90,21 @@ const RenderField = ({
           />
         </FormControl>
       );
-
+    case formFieldType.CHECKBOX:
+      return (
+        <FormControl>
+          <div className="flex items-center">
+            <Checkbox
+              id={props.name}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+            <label htmlFor={props.name} className="ml-2 checkbox-label">
+              {props.label}
+            </label>
+          </div>
+        </FormControl>
+      );
     case formFieldType.EMAIL_INPUT:
       return (
         <div className="flex rounded-md border border-dark-500 bg-dark-400">
@@ -123,7 +138,7 @@ const RenderField = ({
               placeholder={placeholder}
               name={field}
               // field.value as E164Number | undefined
-              value={field.value}
+              value={field.value as E164Number | undefined}
               onChange={field.onChange}
               className="input-phone border-none outline-none"
               {...field}
@@ -133,6 +148,7 @@ const RenderField = ({
           </FormControl>
         </div>
       );
+
     case formFieldType.DATE_PICKER:
       return (
         <div className="flex rounded-md border border-dark-500 bg-dark-400">
@@ -157,6 +173,7 @@ const RenderField = ({
           </FormControl>
         </div>
       );
+
     case formFieldType.SKELETON:
       return renderSkeleton ? renderSkeleton(field) : null;
     case formFieldType.SELECT:
@@ -186,7 +203,7 @@ function CustomFormField(props: CustomFormFieldProps) {
         render={({ field }) => (
           <FormItem className="flex-1">
             {fieldType !== formFieldType.CHECKBOX && label && (
-              <FormLabel>{label}</FormLabel>
+              <FormLabel htmlFor={field.name}>{label}</FormLabel>
             )}
             <RenderField field={field} props={props} />
             <FormMessage className="shad-error" />

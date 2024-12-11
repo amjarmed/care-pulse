@@ -3,30 +3,25 @@ import { getUser } from "@/lib/actions/patient.action";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function Register({
-  params: { userId },
-}: SearchParamProps) {
+export default async function Register({ params }: SearchParamProps) {
+  const { userId } = await params;
   const user = await getUser(userId);
 
   return (
     <div className="flex h-screen max-h-screen ">
-      <section className="remove-scrollbar container my-auto">
-        <Image
-          src="/assets/icons/logo-full.svg"
-          alt="patient"
-          height={1000}
-          width={1000}
-          className="mb-12 h-10 w-fit"
-        />
+      <section className="remove-scrollbar container ">
+        <Link href="/">
+          <Image
+            src="/assets/icons/logo-full.svg"
+            alt="patient"
+            height={1000}
+            width={1000}
+            className="mb-12 h-10 w-fit"
+          />
+        </Link>
+
         <RegisterForm user={user} />
-        <div className="text-14-regular mt-20 flex justify-between ">
-          <p className=" justify-items-end text-dark-600 xl:text-left">
-            &copy; 2024 CarePulse{" "}
-          </p>
-          <Link href="/?admin=true" className="text-green-500">
-            Admin
-          </Link>
-        </div>
+        <p className="copy-right py-12">&copy; 2024 CarePulse </p>
       </section>
       <Image
         src="/assets/images/register-img.png"
