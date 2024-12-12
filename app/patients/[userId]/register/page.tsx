@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import RegisterForm from "@/components/forms/registerForm";
 import { getUser } from "@/lib/actions/patient.action";
 import Image from "next/image";
@@ -21,7 +22,7 @@ export default async function Register({ params }: SearchParamProps) {
         </Link>
 
         <RegisterForm user={user} />
-        <p className="copy-right py-12">&copy; 2024 CarePulse </p>
+        <Footer />
       </section>
       <Image
         src="/assets/images/register-img.png"

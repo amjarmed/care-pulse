@@ -12,6 +12,15 @@ import {
 import { parseStringify } from "@/lib/utils";
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
+/**
+ * Creates a new user in the system using the provided user details.
+ * If a user with the same email already exists, it retrieves and returns the existing user.
+ *
+ * @param {CreateUserParams} user - The user details including name, email, and phone.
+ * @returns {Promise<object>} - The created or existing user data.
+ * @throws Will log an error message if there's an issue during user creation.
+ */
+
 export async function createUser(user: CreateUserParams) {
   try {
     const newuser = await users.create(
@@ -38,6 +47,13 @@ export async function createUser(user: CreateUserParams) {
   }
 }
 
+/**
+ * Retrieves an existing user by their ID.
+ *
+ * @param {string} userId - The unique ID of the user to retrieve.
+ * @returns {Promise<object>} - The user data if found. Otherwise, returns null.
+ * @throws Will log an error message if there's an issue during user retrieval.
+ */
 export const getUser = async (userId: string) => {
   try {
     const user = await users.get(userId);
@@ -84,5 +100,24 @@ export const registerPatient = async ({
     return parseStringify(newPatient);
   } catch (error) {
     console.log("An error occurred while registering user:", error);
+  }
+};
+
+/**
+ * Retrieves a patient's data from the Patient collection by their user ID.
+ * @param {string} patientId - The unique ID of the user to retrieve the patient's data.
+ * @returns {Promise<object>} - The patient's data if found. Otherwise, returns null.
+ * @throws Will log an error message if there's an issue during patient data retrieval.
+ */
+export const getPatient = async (patientId: string) => {
+  try {
+    const patient = await databases.listDocuments(
+      DATABASE_ID!,
+      PATIENT_COLLECTION_ID!,
+      [Query.equal("userId", patientId)]
+    );
+    return parseStringify(patient.documents[0]);
+  } catch (error) {
+    console.log(error);
   }
 };
