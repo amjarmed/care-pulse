@@ -1,15 +1,22 @@
 import Link from "next/link";
 
-function Footer() {
+interface FooterProps extends React.HTMLAttributes<HTMLDivElement> {
+  contentStyle: string;
+}
+const Footer: React.FC<FooterProps> = ({
+  className,
+  contentStyle = "mt-10 py-4",
+  ...props
+}: FooterProps) => {
   return (
-    <div>
+    <div className={className} {...props}>
       {" "}
-      <p className="copyright mt-10 py-4">
+      <p className={`copyright ${contentStyle}`}>
         &copy; {new Date().getFullYear()}
         <Link href="/"> CarePulse</Link>
       </p>
     </div>
   );
-}
+};
 
 export default Footer;

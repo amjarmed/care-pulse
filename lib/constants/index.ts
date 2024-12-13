@@ -79,11 +79,12 @@ export const Doctors = [
   },
 ];
 
-export const StatusIcon = {
-  scheduled: "/assets/icons/check.svg",
-  pending: "/assets/icons/pending.svg",
-  cancelled: "/assets/icons/cancelled.svg",
-};
+export const StatusIcon: Record<"scheduled" | "cancelled" | "pending", string> =
+  {
+    scheduled: "/assets/icons/check.svg",
+    pending: "/assets/icons/pending.svg",
+    cancelled: "/assets/icons/cancelled.svg",
+  };
 
 export enum formFieldType {
   INPUT = "input",

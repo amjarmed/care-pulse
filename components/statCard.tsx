@@ -11,7 +11,7 @@ interface StatCardProps {
 function StatCard({ type, count, label, icon }: StatCardProps) {
   return (
     <div
-      className={clsx("stat-card", {
+      className={clsx("stat-card bg-dark-200 select-none", {
         "bg-appointments": type === "scheduled",
         "bg-pending": type === "pending",
         "bg-cancelled": type === "cancelled",

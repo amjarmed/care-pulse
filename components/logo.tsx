@@ -14,8 +14,8 @@ function Logo({ logoStyle, width, height }: LogoProps) {
         <Image
           src="/assets/icons/logo-full.svg"
           alt="patient"
-          height={height || 1000}
-          width={width || 1000}
+          height={height ?? 1000}
+          width={width ?? 1000}
           className={logoStyle || "mb-12 h-10 w-fit"}
         />
       </Link>

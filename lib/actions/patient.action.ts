@@ -1,5 +1,6 @@
 "use server";
 import {
+  APPOINTMENT_COLLECTION_ID,
   BUCKET_ID,
   DATABASE_ID,
   databases,
@@ -10,6 +11,7 @@ import {
   users,
 } from "@/lib/appwrite.config";
 import { parseStringify } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 /**
@@ -119,5 +121,37 @@ export const getPatient = async (patientId: string) => {
     return parseStringify(patient.documents[0]);
   } catch (error) {
     console.log(error);
+  }
+};
+
+/**
+ * Updates an appointment document in the database using the provided appointment data.
+ * @param {UpdateAppointmentParamks} appointmentData - The appointment data to be updated.
+ * @returns {Promise<object>} - The updated appointment data.
+ * @throws Will log an error message if the appointment update fails.
+ */
+export const updatedAppointment = async ({
+  appointmentId,
+  userId,
+  appointment,
+  type,
+}: UpdateAppointmentParams) => {
+  try {
+    const updatedAppointment = await databases.updateDocument(
+      DATABASE_ID!,
+      APPOINTMENT_COLLECTION_ID!,
+      appointmentId,
+      appointment
+    );
+    if (!updatedAppointment) {
+      throw new Error("Failed to update appointment");
+    }
+
+    // todo: send an sms message with updated appointment
+
+    revalidatePath("/admin");
+    return parseStringify(updatedAppointment);
+  } catch (error) {
+    console.log("An error occurred while updating appointment:", error);
   }
 };

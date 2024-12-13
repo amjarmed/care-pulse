@@ -57,15 +57,17 @@ const RenderField = ({
   switch (props.fieldType) {
     case formFieldType.INPUT:
       return (
-        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+        <div className="flex rounded-md border border-dark-500  overflow-hidden">
           {icon && (
-            <Image
-              src={icon}
-              alt={iconAlt || "icon"}
-              width={24}
-              height={24}
-              className="ml-2"
-            />
+            <div className="bg-dark-400 flex items-center justify-center min-w-[50px]">
+              <Image
+                src={icon}
+                alt={iconAlt || "icon"}
+                width={24}
+                height={24}
+                className="space-x-1 "
+              />
+            </div>
           )}
           <FormControl>
             <Input
@@ -107,22 +109,24 @@ const RenderField = ({
       );
     case formFieldType.EMAIL_INPUT:
       return (
-        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+        <div className="flex rounded-md border  border-dark-500  overflow-hidden">
           {icon && (
-            <Image
-              src={icon}
-              alt={iconAlt || "icon"}
-              width={24}
-              height={24}
-              className="ml-2"
-            />
+            <div className="bg-dark-400 flex items-center justify-center min-w-[50px]">
+              <Image
+                src={icon}
+                alt={iconAlt || "icon"}
+                width={24}
+                height={24}
+                className="space-x-1 "
+              />
+            </div>
           )}
           <FormControl>
             <Input
               type={fieldType}
               placeholder={placeholder}
               name={field}
-              className="shad-input border-0 "
+              className="shad-input border-0"
               {...field}
             />
           </FormControl>
@@ -131,7 +135,7 @@ const RenderField = ({
 
     case formFieldType.PHONE_INPUT:
       return (
-        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+        <div className="flex rounded-md border border-dark-500  overflow-hidden">
           <FormControl>
             <PhoneInput
               defaultCountry="US"
@@ -140,7 +144,8 @@ const RenderField = ({
               // field.value as E164Number | undefined
               value={field.value as E164Number | undefined}
               onChange={field.onChange}
-              className="input-phone border-none outline-none"
+              className="input-phone  border-none outline-none w-full"
+              // className="shad-input border-0 "
               {...field}
               international
               withCountryCallingCode
@@ -151,7 +156,7 @@ const RenderField = ({
 
     case formFieldType.DATE_PICKER:
       return (
-        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+        <div className="flex rounded-md border border-dark-500  overflow-hidden">
           <Image
             src="/assets/icons/calendar.svg"
             alt="calendar"
@@ -201,7 +206,7 @@ function CustomFormField(props: CustomFormFieldProps) {
         control={control}
         name={name}
         render={({ field }) => (
-          <FormItem className="flex-1">
+          <FormItem className="flex-1 overflow-hidden ">
             {fieldType !== formFieldType.CHECKBOX && label && (
               <FormLabel htmlFor={field.name}>{label}</FormLabel>
             )}

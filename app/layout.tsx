@@ -28,16 +28,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen  font-sans antialiased bg-dark-200 text-dark-700",
+          "min-h-screen  font-sans antialiased bg-dark-300 text-dark-700",
           fontSans.variable
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="dark">
           <ModeToggle />
           {children}
         </ThemeProvider>

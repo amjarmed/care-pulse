@@ -55,9 +55,7 @@ export default async function Success({
               width={100}
               className="size-6"
             />
-            <p className="whitespace-break-spaces">
-              Doctor {doctor?.name || ""}
-            </p>
+            <p className="whitespace-nowrap">Doctor {doctor?.name || ""}</p>
           </div>
           <div className="flex gap-2">
             <Image
@@ -67,7 +65,7 @@ export default async function Success({
               width={100}
               className="size-6"
             />
-            <p className="whitespace-break-spaces">
+            <p className="whitespace-nowrap">
               {formatDateTime(appointment.schedule).dateTime}
             </p>
           </div>

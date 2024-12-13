@@ -5,8 +5,10 @@ import SubmitButton from "@/components/submitButton";
 import { Form } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
 import { createAppointment } from "@/lib/actions/appointment.actions";
+import { updatedAppointment } from "@/lib/actions/patient.action";
 import { Doctors, formFieldType } from "@/lib/constants";
 import { getAppointmentSchema } from "@/lib/validation";
+import { Appointment } from "@/types/appwrite.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -18,8 +20,16 @@ interface AppointmentFormProps {
   userId: string;
   patientId: string;
   type: "create" | "cancel" | "schedule";
+  setOpen?: (open: boolean) => void;
+  appointment?: Appointment;
 }
-function AppointmentForm({ userId, patientId, type }: AppointmentFormProps) {
+function AppointmentForm({
+  userId,
+  patientId,
+  type = "create",
+  appointment,
+  setOpen,
+}: AppointmentFormProps) {
   // loader
   const [isLoading, setLoading] = useState(false);
   // router
@@ -45,26 +55,28 @@ function AppointmentForm({ userId, patientId, type }: AppointmentFormProps) {
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      primaryPhysician: "",
-      schedule: new Date(),
-      reason: "",
-      note: "",
-      cancellationReason: "",
+      primaryPhysician: appointment?.primaryPhysician || "",
+      schedule: appointment
+        ? new Date(appointment.schedule)
+        : new Date(Date.now()),
+      reason: appointment ? appointment.reason : "",
+      note: appointment?.note || "",
+      cancellationReason: appointment?.cancellationReason || "",
     },
   });
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
-    console.log("start submit...");
+    console.log("start submitting...");
     setLoading(true);
 
     let status;
     switch (type) {
       case "schedule":
-        status = "schedule";
+        status = "scheduled";
 
         break;
       case "cancel":
-        status = "cancel";
+        status = "cancelled";
 
         break;
       default:
@@ -88,8 +100,6 @@ function AppointmentForm({ userId, patientId, type }: AppointmentFormProps) {
           status: status as Status,
         });
 
-        console.log(AppointmentData);
-
         const appointment = await createAppointment(AppointmentData);
 
         if (appointment) {
@@ -97,6 +107,29 @@ function AppointmentForm({ userId, patientId, type }: AppointmentFormProps) {
           router.push(
             `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`
           );
+        }
+      } else {
+        const appointmentToUpdate = {
+          userId,
+          appointmentId: appointment?.$id!,
+          appointment: {
+            primaryPhysician: values?.primaryPhysician,
+            schedule: new Date(values.schedule),
+            status: status as Status,
+            cancellationReason: values?.cancellationReason,
+            reason: values?.reason,
+            note: values?.note,
+          },
+          type,
+        };
+
+        console.log({ appointmentToUpdate });
+
+        const updatedAppnt = await updatedAppointment(appointmentToUpdate);
+
+        if (updatedAppnt) {
+          setOpen?.(false);
+          form.reset();
         }
       }
     } catch (error) {
@@ -107,12 +140,15 @@ function AppointmentForm({ userId, patientId, type }: AppointmentFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
-        <section className="space-y-4 mb-12">
-          <h1 className="header">New Appointment 👩‍⚕️</h1>
-          <p className="text-dark-700">
-            Request new appointment in 10 seconds.
-          </p>
-        </section>
+        {type === "create" && (
+          <section className="space-y-4 mb-12">
+            <h1 className="header">New Appointment 👩‍⚕️</h1>
+            <p className="text-dark-700">
+              Request new appointment in 10 seconds.
+            </p>
+          </section>
+        )}
+
         {type !== "cancel" && (
           <>
             <CustomFormField

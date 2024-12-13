@@ -7,7 +7,6 @@ import Link from "next/link";
 export default async function Home({ searchParams }: SearchParamProps) {
   const { admin } = await searchParams;
   const isAdmin = admin === "true";
-  console.log(isAdmin);
 
   return (
     <div className="flex h-screen max-h-screen ">
@@ -23,7 +22,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
           />
           <PatientForm />
           <div className="text-14-regular mt-20 flex justify-between ">
-            <Footer />
+            <Footer className="" contentStyle="m-0 p-0" />
             <Link href="/?admin=true" className="text-green-500">
               Admin
             </Link>
