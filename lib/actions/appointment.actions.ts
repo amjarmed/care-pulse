@@ -3,6 +3,7 @@ import {
   APPOINTMENT_COLLECTION_ID,
   DATABASE_ID,
   databases,
+  messaging,
 } from "@/lib/appwrite.config";
 import { parseStringify } from "@/lib/utils";
 import { Appointment } from "@/types/appwrite.types";
@@ -106,5 +107,25 @@ export const getRecentAppointmentList = async () => {
     return parseStringify(data);
   } catch (error) {
     console.log("An error occurred while getting recent appointment:", error);
+  }
+};
+
+export const sendSMSNotification = async ({
+  userId,
+  content,
+}: {
+  userId: string;
+  content: string;
+}) => {
+  try {
+    const message = await messaging.createSms(
+      ID.unique(),
+      content,
+      [],
+      [userId]
+    );
+    return parseStringify(message);
+  } catch (error) {
+    console.log(" error while sending sms", error);
   }
 };

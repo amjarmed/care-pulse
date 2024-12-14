@@ -1,13 +1,14 @@
 import Footer from "@/components/Footer";
 import RegisterForm from "@/components/forms/registerForm";
 import { getUser } from "@/lib/actions/patient.action";
+import * as Sentry from "@sentry/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
 export default async function Register({ params }: SearchParamProps) {
   const { userId } = await params;
   const user = await getUser(userId);
-
+  Sentry.metrics.set("user_view_register", user.name);
   return (
     <div className="flex h-screen max-h-screen ">
       <section className="remove-scrollbar container ">

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 interface FooterProps extends React.HTMLAttributes<HTMLDivElement> {
-  contentStyle: string;
+  contentStyle?: string;
 }
 const Footer: React.FC<FooterProps> = ({
   className,

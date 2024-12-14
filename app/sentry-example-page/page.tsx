@@ -5,14 +5,6 @@ import * as Sentry from "@sentry/nextjs";
 import Head from "next/head";
 
 export default function Page() {
-  try {
-    throw new Error("Test Error thrown");
-  } catch (error) {
-    Sentry.captureException(error);
-    console.error(error);
-    // res.status(500).json({ message: "An error occurred", error: error.message });
-  }
-
   return (
     <div>
       <Head>
@@ -26,7 +18,7 @@ export default function Page() {
         <p>Get started by sending us a sample error</p>
 
         <Button
-          className="px-4 mt-8"
+          className="px-4 mt-8 w-1/2"
           onClick={async () => {
             await Sentry.startSpan(
               {

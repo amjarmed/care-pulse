@@ -40,8 +40,8 @@ const nextConfig: NextConfig = {
 };
 
 export default withSentryConfig(nextConfig, {
-  org: "amjarmed-dev",
-  project: "carepulse",
+  org: "sentraorg",
+  project: "javascript-nextjs",
   silent: !process.env.CI,
   widenClientFileUpload: true,
   hideSourceMaps: true,

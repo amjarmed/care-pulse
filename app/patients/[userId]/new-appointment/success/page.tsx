@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { getAppointment } from "@/lib/actions/appointment.actions";
 import { Doctors } from "@/lib/constants";
 import { formatDateTime } from "@/lib/utils";
+import * as Sentry from "@sentry/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,6 +15,11 @@ export default async function Success({
   const { userId } = await params;
 
   const appointment = await getAppointment((appointmentId! as string) || "");
+
+  Sentry.metrics.set(
+    "user_view_success",
+    appointment.patient.name || "new appointment"
+  );
 
   const doctor = Doctors.find(
     (doctor) => doctor.name === appointment.primaryPhysician
@@ -37,6 +43,7 @@ export default async function Success({
             alt="success"
             height={300}
             width={280}
+            unoptimized
           />
           <h2 className="header mb-6 max-w-[600px] text-center">
             your <span className="text-green-500">appointment request</span> has

@@ -1,16 +1,18 @@
 "use server";
+import { sendSMSNotification } from "@/lib/actions/appointment.actions";
 import {
   APPOINTMENT_COLLECTION_ID,
   BUCKET_ID,
   DATABASE_ID,
   databases,
+  DOCTOR_COLLECTION_ID,
   ENDPOINT,
   PATIENT_COLLECTION_ID,
   PROJECT_ID,
   storage,
   users,
 } from "@/lib/appwrite.config";
-import { parseStringify } from "@/lib/utils";
+import { formatDateTime, parseStringify } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
@@ -147,11 +149,44 @@ export const updatedAppointment = async ({
       throw new Error("Failed to update appointment");
     }
 
-    // todo: send an sms message with updated appointment
+    const smsMessage = `Hi, it's CarePulse.
+     ${
+       type === "scheduled"
+         ? `Your appointment has been scheduled for ${
+             formatDateTime(updatedAppointment.schedule).dateTime
+           } with Dr. ${updatedAppointment.primaryPhysician}.`
+         : `We regret to inform you that your appointment has been cancelled for the following reason: ${appointment.reason}`
+     }.`;
+    await sendSMSNotification({ userId, content: smsMessage });
 
     revalidatePath("/admin");
     return parseStringify(updatedAppointment);
   } catch (error) {
     console.log("An error occurred while updating appointment:", error);
+  }
+};
+
+export const getDoctors = async () => {
+  try {
+    const doctors = await databases.listDocuments(
+      DATABASE_ID!,
+      DOCTOR_COLLECTION_ID!,
+      [Query.equal("status", "active")]
+    );
+    return parseStringify(doctors.documents);
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const getDoctor = async (doctorId: string) => {
+  try {
+    const doctor = await databases.getDocument(
+      DATABASE_ID!,
+      DOCTOR_COLLECTION_ID!,
+      doctorId
+    );
+    return parseStringify(doctor);
+  } catch (error) {
+    console.log(error);
   }
 };
